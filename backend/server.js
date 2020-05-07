@@ -3,15 +3,17 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const path = require('path');
 const jwt = require('jsonwebtoken');
-const port = 5000
+
+require('dotenv').config();
+const {PORT, DB_HOST, DB_NAME, DB_PASS, DB_PORT, DB_USER} = process.env
 
 const Pool = require('pg').Pool
 const pool = new Pool({
-    user: 'patryk',
-    host: '127.0.0.1',
-    database: 'postgres',
-    password: 'password',
-    port: 5432,
+    user: DB_USER,
+    host: DB_HOST,
+    database: DB_NAME,
+    password: DB_PASS,
+    port: DB_PORT,
 })
 
 const app = express()
@@ -34,4 +36,4 @@ app.get('/', (req, res) => {
     })
 })
 
-app.listen(port, () => console.log(`Example app listening at http://localhost:${port}`))
+app.listen(PORT, () => console.log(`Example app listening at http://localhost:${PORT}`))
