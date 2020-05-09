@@ -1,7 +1,9 @@
 const express = require('express')
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const http = require('http');
 const path = require('path');
+const cors = require('cors');
 const jwt = require('jsonwebtoken');
 
 require('dotenv').config();
@@ -16,12 +18,15 @@ const pool = new Pool({
     port: DB_PORT,
 })
 
-const app = express()
+const app = express();
+app.use(cors());
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
 
 app.get('/', (req, res) => {
+    console.log('Wbito na endpoint /')
     pool.connect((err, client, release) => {
         if (err) {
             return console.error('Error acquiring client', err.stack)
@@ -31,9 +36,14 @@ app.get('/', (req, res) => {
             if (err) {
                 return console.error('Error executing query', err.stack)
             }
+            console.log(result.rows)
             res.send(result.rows)
         })
     })
 })
 
-app.listen(PORT, () => console.log(`Example app listening at http://localhost:${PORT}`))
+const server = http.createServer(app);
+
+server.listen(PORT, () => {
+    console.log(`Server running at http://127.0.0.1:${PORT}/`);
+});
