@@ -1,8 +1,12 @@
 import React from "react";
+import './_Footer.scss';
+import {Container} from "react-bootstrap";
 
 const Footer = () => {
     return (
-        <h1>Footer</h1>
+        <Container className="container-fluid footer">
+            <p>Contact information: <a href="mailto:patryk.fijalkowski1@egmail.com">patryk.fijalkowski1@egmail.com</a>.</p>
+        </Container>
     )
 }
 

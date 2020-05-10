@@ -1,8 +1,11 @@
 import React from "react";
+import styles from "./_Navbar.scss";
 
 const Navbar = () => {
     return (
-        <h1>Navbar</h1>
+        <div className="navigation">
+
+        </div>
     )
 }
 
