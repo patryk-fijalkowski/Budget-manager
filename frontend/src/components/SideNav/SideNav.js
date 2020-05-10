@@ -1,17 +1,19 @@
-import React, {useState} from "react";
+import React from "react";
+import { Link } from 'react-router-dom'
 import './_SideNav.scss';
 
 
-const SideNav = ({sideNavOpen}) => {
-
+const SideNav = ({sideNavOpen, setSideNavOpen}) => {
+    const hideSideNav = () => {
+        setSideNavOpen(false)
+    }
     return (
         <>
             <div className={sideNavOpen ? 'sideNav' : ' sideNav sideNav--hidden'}>
                 <ul>
-                    <li>Link1</li>
-                    <li>Link2</li>
-                    <li>Link3</li>
-                    <li>Link4</li>
+                    <li key='1' onClick={hideSideNav}><Link to='/'>Home</Link></li>
+                    <li key='2' onClick={hideSideNav}><Link to='/createReceipt'>Create Receipt</Link></li>
+                    <li key='3' onClick={hideSideNav}><Link to='/allReceipts'>All Receipts</Link></li>
                 </ul>
             </div>
             {sideNavOpen &&
