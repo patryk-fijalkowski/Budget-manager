@@ -1,0 +1,27 @@
+.form-input-group {
+  display: flex;
+  justify-content: space-around;
+  padding-bottom: 15px;
+    &__input  {
+      width: 300px;
+      padding: 20px;
+   }
+}
+
+.item-list {
+  display: flex;
+  justify-content: space-around;
+  padding-bottom: 15px;
+  &__input {
+    width: 300px;
+    padding: 20px;
+  }
+}
+
+.receipt-form {
+  &__submit-button {
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 20px;
+  }
+}

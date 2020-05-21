@@ -12,7 +12,7 @@ import * as AccountActions from "./store/actions/AccountActions";
 import Header from "./components/Header/Header";
 import SideNav from "./components/SideNav/SideNav";
 import Footer from "./components/Footer/Footer";
-import './App.css';
+import './App.scss';
 const {store} = configureStore();
 
 // const handleClick = () => {

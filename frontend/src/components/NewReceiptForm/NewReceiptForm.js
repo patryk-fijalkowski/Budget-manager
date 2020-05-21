@@ -14,8 +14,10 @@ import ListItemText from "@material-ui/core/ListItemText";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
-
+import * as Yup from 'yup';
 import Autocomplete from "@material-ui/lab/Autocomplete";
+import { regexps } from "../../utils/constans";
+import { InputAdornment } from '@material-ui/core';
 
 export const DatePickerField = ({ ...props }) => {
     const { setFieldValue } = useFormikContext();
@@ -29,6 +31,11 @@ export const DatePickerField = ({ ...props }) => {
             onChange={(val) => {
                 setFieldValue(field.name, val);
             }}
+            showTimeSelect
+            timeFormat="HH:mm"
+            timeIntervals={15}
+            timeCaption="time"
+            dateFormat="MMMM d, yyyy h:mm aa"
             placeholderText="Data"
             autoComplete="off"
             customInput={<TextField variant="outlined" />}
@@ -44,24 +51,38 @@ const NewReceiptForm = () => {
         itemCategory: "",
     });
 
-    const top100Films = [
+    const clearInputs = () => {
+        setItemValues({itemName: "", itemPrice: "", itemCategory: ""})
+    }
+
+    const categories = [
         { title: "Artykuły spożywcze" },
         { title: "Kosmetyki" },
         { title: "Transport" },
         { title: "Mieszkanie" },
     ];
     const defaultProps = {
-        options: top100Films,
+        options: categories,
         getOptionLabel: (option) => option.title,
     };
+
+    const AddReceiptSchema = Yup.object().shape({
+        shopName: Yup.string()
+            .min(5, 'Too Short!')
+            .matches(regexps.NOT_ONLY_SPEC_CHAR_AND_NUMS, `nie  spec char i cyfry`)
+            .required('Required'),
+        recipeAmount: Yup.string()
+            .min(2, 'Too Short!')
+            .required('Required')
+    });
+
     return (
-        <div>
-            <h1>Friend List</h1>
+        <div className="receipt-form">
             <Formik
                 initialValues={{
-                    date: null,
-                    recipeAmount: null,
-                    shopName: null,
+                    date: '',
+                    recipeAmount: '',
+                    shopName: '',
                     items: [
                         {
                             itemName: "Jajka",
@@ -85,42 +106,68 @@ const NewReceiptForm = () => {
                         },
                     ],
                 }}
+                validationSchema={AddReceiptSchema}
                 onSubmit={(values, actions) => {
                     console.log(values);
                 }}
-                render={({ values, handleSubmit, handleChange, handleReset, dirty, isSubmitting }) => (
+                render={({ errors, values, handleSubmit, handleChange, handleReset, dirty, isSubmitting }) => (
                     <Form onSubmit={handleSubmit}>
+                        <div className="form-input-group">
                         <TextField
+                            className="form-input-group__input"
                             id="standard-full-width"
+                            autoComplete="off"
                             variant="outlined"
                             name="shopName"
+                            error={errors.shopName}
+                            helperText={errors.shopName}
                             placeholder="Nazwa sklepu"
                             type="text"
                             onChange={handleChange}
                         />
-                        <DatePickerField name="date" />
                         <TextField
+                            className="form-input-group__input"
+                            autoComplete="off"
                             variant="outlined"
                             name="recipeAmount"
+                            error={errors.recipeAmount}
+                            helperText={errors.recipeAmount}
                             placeholder="Kwota całkowita PLN"
                             type="number"
                             onChange={handleChange}
+                            InputProps={{
+                                endAdornment: <InputAdornment position="end">PLN</InputAdornment>,
+                            }}
                         />
+                        <DatePickerField
+                                className="form-input-group__input"
+                                name="date"
+                        />
+                        </div>
                         <FieldArray
                             name="items"
                             render={(arrayHelpers) => (
                                 <div>
+                                <div className="item-list">
                                     <TextField
+                                        className="item-list__input"
+                                        autoComplete="off"
                                         variant="outlined"
                                         name="itemName"
+                                        error={errors.itemName}
+                                        helperText={errors.itemName}
+                                        label="Nazwa produktu"
                                         placeholder="Nazwa produktu"
                                         type="text"
                                         onChange={(e) => setItemValues({ ...itemValues, itemName: e.target.value })}
                                         value={itemValues.itemName}
                                     />
                                     <TextField
+                                        className="item-list__input"
+                                        autoComplete="off"
                                         variant="outlined"
                                         name="itemPrice"
+                                        label="Cena"
                                         placeholder="Cena"
                                         type="number"
                                         onChange={(e) =>
@@ -129,16 +176,22 @@ const NewReceiptForm = () => {
                                                 itemPrice: e.target.value,
                                             })
                                         }
+                                        InputProps={{
+                                            endAdornment: <InputAdornment position="end">PLN</InputAdornment>,
+                                        }}
                                         value={itemValues.itemPrice}
                                     />
                                     <Autocomplete
                                         {...defaultProps}
                                         id="clear-on-blur"
                                         clearOnBlur={false}
-                                        fullWidth={false}
+                                        inputValue={itemValues.itemCategory}
                                         renderInput={(params) => (
                                             <TextField
                                                 {...params}
+                                                className="item-list__input"
+                                                fullWidth={false}
+                                                autoComplete="off"
                                                 variant="outlined"
                                                 label="Kategoria"
                                                 name="itemCategory"
@@ -150,24 +203,21 @@ const NewReceiptForm = () => {
                                                         itemCategory: e.target.value,
                                                     })
                                                 }
-                                                value={itemValues.itemCategory}
+
                                             />
                                         )}
                                     />
-
+                                </div>
                                     <Button
                                         variant="outlined"
                                         type="button"
                                         onClick={() => {
-                                            setItemValues({
-                                                itemName: "",
-                                                itemPrice: "",
-                                                itemCategory: "",
-                                            });
+                                            clearInputs()
                                             arrayHelpers.push(itemValues);
                                         }}>
-                                        Add item
+                                        Dodaj produkt
                                     </Button>
+
                                     <List>
                                         {values.items && values.items.length > 0
                                             ? values.items.map((item, index) => {
@@ -191,25 +241,17 @@ const NewReceiptForm = () => {
                                               })
                                             : null}
                                     </List>
-                                    {/*<ul>*/}
-                                    {/*    {values.items && values.items.length > 0 ? (*/}
-                                    {/*        values.items.map((item, index) => (*/}
-                                    {/*        <li key={index}>{item.itemName + item.itemPrice + item.itemCategory}</li>*/}
-                                    {/*        ))*/}
-                                    {/*    ) : null}*/}
-                                    {/*</ul>*/}
-
-                                    <div>
-                                        <Button variant="outlined" type="submit">
-                                            Submit
-                                        </Button>
-                                    </div>
                                 </div>
                             )}
                         />
                     </Form>
                 )}
             />
+            <div className="receipt-form__submit-button">
+                <Button variant="outlined" type="submit">
+                    Dodaj paragon
+                </Button>
+            </div>
         </div>
     );
 };
