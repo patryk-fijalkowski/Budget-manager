@@ -4,6 +4,7 @@ const AllReceipts = () => {
     return (
         <>
             <h1>ALL RECEIPTS PAGE</h1>
+
         </>
     )
 }

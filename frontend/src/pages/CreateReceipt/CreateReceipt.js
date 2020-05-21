@@ -1,11 +1,11 @@
 import React from "react";
-import SignupForm from "../../components/CreateReceiptForm/CreateReceiptForm";
+import NewReceiptForm from "../../components/NewReceiptForm/NewReceiptForm";
 
 const CreateReceipt = () => {
     return (
         <>
             <h1>CREATE RECEIPT PAGE</h1>
-            <SignupForm/>
+            <NewReceiptForm/>
         </>
     )
 }
