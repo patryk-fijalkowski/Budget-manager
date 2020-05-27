@@ -1,14 +1,10 @@
-import React, {useEffect, useState} from 'react';
-import Layout from './components/layout'
+import React, {useState} from 'react';
 import {Switch, Route, BrowserRouter} from 'react-router-dom'
 import {configureStore} from "./store/ConfigureStore"
 import {Provider} from "react-redux";
 import HomePage from "./pages/HomePage/HomePage";
 import AllReceipts from "./pages/AllReceipts/AllReceipts";
 import CreateReceipt from "./pages/CreateReceipt/CreateReceipt";
-import {Button} from "react-bootstrap";
-import {axiosInstance} from './services/AxiosInstance'
-import * as AccountActions from "./store/actions/AccountActions";
 import Header from "./components/Header/Header";
 import SideNav from "./components/SideNav/SideNav";
 import Footer from "./components/Footer/Footer";
@@ -55,16 +51,16 @@ function App() {
     return (
         <Provider store={store}>
             <BrowserRouter>
-                <Header setSideNavOpen={setSideNavOpen} sideNavOpen={sideNavOpen}/>
-                <SideNav sideNavOpen={sideNavOpen} setSideNavOpen={setSideNavOpen}/>
+                <Header setSideNavOpen={setSideNavOpen} sideNavOpen={sideNavOpen} />
+                <SideNav sideNavOpen={sideNavOpen} setSideNavOpen={setSideNavOpen} />
                 <main className="main">
                     <Switch>
-                        <Route exact path='/' component={HomePage}/>
-                        <Route path='/createReceipt' component={CreateReceipt}/>
-                        <Route path='/allReceipts' component={AllReceipts}/>
+                        <Route exact path='/' component={HomePage} />
+                        <Route path='/createReceipt' component={CreateReceipt} />
+                        <Route path='/allReceipts' component={AllReceipts} />
                     </Switch>
                 </main >
-                <Footer/>
+                <Footer />
             </BrowserRouter>
         </Provider>
     );

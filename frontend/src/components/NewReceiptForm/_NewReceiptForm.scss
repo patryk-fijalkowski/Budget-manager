@@ -1,27 +1,52 @@
-.form-input-group {
+.receipt-form {
+  border: 1px solid;
+  width: 900px;
+  margin: 0 auto;
+  &__summary {
+    display: flex;
+    justify-content: space-between;
+    &__total-amount {
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-size: large;
+      font-weight: bold;
+      padding: 10px;
+    }
+    &__submit-button {
+      margin-right: 20px;
+    }
+  }
+}
+
+.form-header {
   display: flex;
   justify-content: space-around;
   padding-bottom: 15px;
+  border-bottom: 1px solid #a8a7a7;
     &__input  {
-      width: 300px;
+      width: 240px;
       padding: 20px;
    }
 }
 
-.item-list {
-  display: flex;
-  justify-content: space-around;
-  padding-bottom: 15px;
+.form-items-list {
+  padding-top: 15px;
+  border: 1px solid;
+  &__header {
+    display: flex;
+    justify-content: space-around;
+    padding-bottom: 40px;
+  }
   &__input {
-    width: 300px;
+    width: 240px;
     padding: 20px;
   }
-}
-
-.receipt-form {
-  &__submit-button {
-    display: flex;
-    justify-content: flex-end;
-    margin-right: 20px;
+  &__button {
+    padding: 0 !important;
+    &__add-icon {
+      font-size: 3rem !important;
+    }
+  }
+  &__no-items-message {
+    color: darkred;
   }
 }
