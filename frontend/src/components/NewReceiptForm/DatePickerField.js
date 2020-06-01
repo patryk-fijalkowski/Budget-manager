@@ -3,6 +3,8 @@ import { TextField } from "@material-ui/core";
 import React from "react";
 import { useField, useFormikContext } from "formik";
 
+import "react-datepicker/dist/react-datepicker.css";
+
 export const DatePickerField = ({ ...props }) => {
     const { setFieldValue } = useFormikContext();
     const [field] = useField(props);

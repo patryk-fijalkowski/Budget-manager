@@ -20,8 +20,6 @@ import AddIcon from "@material-ui/icons/Add";
 import { DatePickerField } from "./DatePickerField";
 import { ReceiptValidationSchema } from "./ReceiptFormValidation";
 
-import "react-datepicker/dist/react-datepicker.css";
-
 const ReceiptForm = () => {
     const [totalAmount, setTotalAmount] = useState(0);
     const [itemValues, setItemValues] = useState({
