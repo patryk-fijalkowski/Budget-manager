@@ -1,14 +1,13 @@
 import React from "react";
-import NewReceiptForm from "../../components/NewReceiptForm/NewReceiptForm";
+import ReceiptForm from "../../components/NewReceiptForm/ReceiptForm";
 
 const CreateReceipt = () => {
     return (
         <>
             <h1>CREATE RECEIPT PAGE</h1>
-            <NewReceiptForm/>
+            <ReceiptForm />
         </>
-    )
-}
+    );
+};
 
 export default CreateReceipt;
-

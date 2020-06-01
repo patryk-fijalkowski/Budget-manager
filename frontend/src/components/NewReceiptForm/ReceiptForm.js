@@ -1,53 +1,29 @@
-import React, {useState} from "react";
-import DatePicker from "react-datepicker";
+import React, { useState } from "react";
+// import { useTranslation } from "react-i18next";
+import { FieldArray, Formik } from "formik";
+import {
+    TextField,
+    Button,
+    IconButton,
+    InputAdornment,
+    TableContainer,
+    Paper,
+    Table,
+    TableHead,
+    TableRow,
+    TableCell,
+    TableBody,
+} from "@material-ui/core";
+import Autocomplete from "@material-ui/lab/Autocomplete";
+import DeleteIcon from "@material-ui/icons/Delete";
+import AddIcon from "@material-ui/icons/Add";
+import { DatePickerField } from "./DatePickerField";
+import { ReceiptValidationSchema } from "./ReceiptFormValidation";
 
 import "react-datepicker/dist/react-datepicker.css";
 
-import {FieldArray, Formik, useField, useFormikContext} from "formik";
-// import { useTranslation } from "react-i18next";
-import Form from "react-bootstrap/Form";
-import {TextField} from "@material-ui/core";
-import {Button} from "@material-ui/core";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
-import IconButton from "@material-ui/core/IconButton";
-import DeleteIcon from "@material-ui/icons/Delete";
-import AddIcon from "@material-ui/icons/Add";
-import * as Yup from 'yup';
-import Autocomplete from "@material-ui/lab/Autocomplete";
-import {regexps} from "../../utils/constans";
-import {InputAdornment} from '@material-ui/core';
-import {TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody} from "@material-ui/core";
-
-export const DatePickerField = ({...props}) => {
-    const {setFieldValue} = useFormikContext();
-    const [field] = useField(props);
-
-    return (
-        <DatePicker
-            {...field}
-            {...props}
-            selected={(field.value && new Date(field.value)) || null}
-            onChange={(val) => {
-                setFieldValue(field.name, val);
-            }}
-            showTimeSelect
-            timeFormat="HH:mm"
-            timeIntervals={15}
-            timeCaption="time"
-            dateFormat="MMMM d, yyyy h:mm aa"
-            placeholderText="Data"
-            autoComplete="off"
-            customInput={<TextField variant="outlined"/>}
-        />
-    );
-};
-
-const NewReceiptForm = () => {
-    // const { t } = useTranslation();
-    const [totalAmount, setTotalAmount] = useState(0)
+const ReceiptForm = () => {
+    const [totalAmount, setTotalAmount] = useState(0);
     const [itemValues, setItemValues] = useState({
         itemName: "",
         itemPrice: "",
@@ -55,53 +31,44 @@ const NewReceiptForm = () => {
     });
 
     const clearInputs = () => {
-        setItemValues({itemName: "", itemPrice: "", itemCategory: ""})
-    }
+        setItemValues({ itemName: "", itemPrice: "", itemCategory: "" });
+    };
 
     const countTotalAmount = (values) => {
-        let countedAmount = values.reduce((total, item) => total + item.itemPrice.replace(',', '.') * 1, 0)
-        setTotalAmount(countedAmount)
-    }
+        let countedAmount = values.reduce((total, item) => total + item.itemPrice.replace(",", ".") * 1, 0);
+        setTotalAmount(countedAmount);
+    };
 
     const categories = [
-        {title: "Artykuły spożywcze"},
-        {title: "Kosmetyki"},
-        {title: "Transport"},
-        {title: "Mieszkanie"},
+        { title: "Artykuły spożywcze" },
+        { title: "Kosmetyki" },
+        { title: "Transport" },
+        { title: "Mieszkanie" },
     ];
 
     const defaultProps = {
         options: categories,
-        getOptionLabel: (option) => option.title,
-        getOptionSelected: (option) => option.title
+        getOptionSelected: (option) => option.title,
     };
-
-    const AddReceiptSchema = Yup.object().shape({
-        shopName: Yup.string()
-            .min(5, 'Too Short!')
-            .matches(regexps.NOT_ONLY_SPEC_CHAR_AND_NUMS, `nie  spec char i cyfry`)
-            .required('Required'),
-        recipeAmount: Yup.string()
-            .min(2, 'Too Short!')
-            .required('Required')
-    });
 
     return (
         <div className="receipt-form">
             <Formik
                 initialValues={{
-                    date: '',
-                    recipeAmount: '',
-                    shopName: '',
+                    date: "",
+                    recipeAmount: "",
+                    shopName: "",
                     items: [],
                 }}
-                validationSchema={AddReceiptSchema}
-                onSubmit={(values, actions) => {
-                    console.log(values);
-                }}
-            >
-                {({errors, values, handleSubmit, handleChange}) => (
-                    <Form onSubmit={handleSubmit}>
+                validationSchema={ReceiptValidationSchema}
+                onSubmit={(values, { setValues, setSubmitting }) => {
+                    const payload = { ...values, recipeAmount: totalAmount };
+                    setValues(payload);
+                    console.log(payload);
+                    setSubmitting(false);
+                }}>
+                {({ errors, values, handleSubmit, handleChange, setValues, setFieldValue }) => (
+                    <form onSubmit={handleSubmit}>
                         <div className="form-header">
                             <TextField
                                 className="form-header__input"
@@ -115,11 +82,7 @@ const NewReceiptForm = () => {
                                 type="text"
                                 onChange={handleChange}
                             />
-
-                            <DatePickerField
-                                className="form-header__input"
-                                name="date"
-                            />
+                            <DatePickerField className="form-header__input" name="date" error={errors} />
                         </div>
                         <FieldArray
                             name="items"
@@ -135,7 +98,7 @@ const NewReceiptForm = () => {
                                             label="Nazwa produktu"
                                             placeholder="Nazwa produktu"
                                             type="text"
-                                            onChange={(e) => setItemValues({...itemValues, itemName: e.target.value})}
+                                            onChange={(e) => setItemValues({ ...itemValues, itemName: e.target.value })}
                                             value={itemValues.itemName}
                                         />
                                         <TextField
@@ -145,7 +108,9 @@ const NewReceiptForm = () => {
                                             label="Cena"
                                             placeholder="Cena"
                                             type="number"
-                                            onChange={(e) => setItemValues({...itemValues, itemPrice: e.target.value})}
+                                            onChange={(e) =>
+                                                setItemValues({ ...itemValues, itemPrice: e.target.value })
+                                            }
                                             InputProps={{
                                                 endAdornment: <InputAdornment position="end">PLN</InputAdornment>,
                                             }}
@@ -155,12 +120,16 @@ const NewReceiptForm = () => {
                                             {...defaultProps}
                                             id="clear-on-blur"
                                             clearOnBlur={false}
+                                            disableClearable={true}
                                             getOptionSelected={defaultProps.getOptionSelected}
+                                            getOptionLabel={defaultProps.getOptionSelected}
                                             inputValue={itemValues.itemCategory}
-                                            onChange={(e, value) => setItemValues({
-                                                ...itemValues,
-                                                itemCategory: value.title
-                                            })}
+                                            onChange={(e, value) =>
+                                                setItemValues({
+                                                    ...itemValues,
+                                                    itemCategory: value.title,
+                                                })
+                                            }
                                             renderInput={(params) => (
                                                 <TextField
                                                     {...params}
@@ -177,14 +146,15 @@ const NewReceiptForm = () => {
                                         <IconButton
                                             className="form-items-list__button"
                                             disabled={Object.values(itemValues).indexOf("") !== -1}
-                                            size="large" edge="end" aria-label="add-item">
-                                            <AddIcon
-                                                className="form-items-list__button__add-icon"
-                                                onClick={() => {
-                                                    clearInputs()
-                                                    arrayHelpers.push(itemValues);
-                                                    countTotalAmount([...values.items, itemValues])
-                                                }}/>
+                                            edge="end"
+                                            aria-label="add-item"
+                                            onClick={() => {
+                                                clearInputs();
+                                                arrayHelpers.push(itemValues);
+                                                countTotalAmount([...values.items, itemValues], values);
+                                                setFieldValue("totalAmount", totalAmount);
+                                            }}>
+                                            <AddIcon className="form-items-list__button__add-icon" />
                                         </IconButton>
                                     </div>
                                     <TableContainer component={Paper}>
@@ -195,41 +165,44 @@ const NewReceiptForm = () => {
                                                     <TableCell align="left">Nazwa produktu</TableCell>
                                                     <TableCell align="left">Cena</TableCell>
                                                     <TableCell align="left">Kategoria</TableCell>
-                                                    <TableCell align="left"></TableCell>
+                                                    <TableCell align="left" />
                                                 </TableRow>
                                             </TableHead>
                                             <TableBody>
-                                            {values.items && values.items.length > 0
-                                                ? values.items.map((item, index) => {
-                                                    return (
+                                                {values.items && values.items.length > 0 ? (
+                                                    values.items.map((item, index) => {
+                                                        return (
                                                             <TableRow key={index}>
                                                                 <TableCell>{index + 1}</TableCell>
                                                                 <TableCell>{item.itemName}</TableCell>
                                                                 <TableCell>{item.itemPrice}</TableCell>
                                                                 <TableCell>{item.itemCategory}</TableCell>
                                                                 <TableCell>
-                                                                    <IconButton size="small" edge="end"
-                                                                                aria-label="delete">
-                                                                        <DeleteIcon
-                                                                            onClick={() => {
-                                                                                arrayHelpers.remove(index)
-                                                                                values.items.splice(index,1)
-                                                                                countTotalAmount(values.items)
-                                                                            }
-                                                                      }/>
+                                                                    <IconButton
+                                                                        size="small"
+                                                                        edge="end"
+                                                                        aria-label="delete"
+                                                                        onClick={() => {
+                                                                            arrayHelpers.remove(index);
+                                                                            values.items.splice(index, 1);
+                                                                            countTotalAmount(values.items);
+                                                                        }}>
+                                                                        <DeleteIcon />
                                                                     </IconButton>
                                                                 </TableCell>
                                                             </TableRow>
-                                                    )
-                                                })
-                                                : (
-                                                <TableRow>
-                                                   <TableCell className="form-items-list__no-items-message" colSpan={5} align="center">
-                                                         Brak dodanych przedmiotów
-                                                   </TableCell>
-                                                </TableRow>
-                                                )
-                                            }
+                                                        );
+                                                    })
+                                                ) : (
+                                                    <TableRow>
+                                                        <TableCell
+                                                            className="form-items-list__no-items-message"
+                                                            colSpan={5}
+                                                            align="center">
+                                                            Brak dodanych przedmiotów
+                                                        </TableCell>
+                                                    </TableRow>
+                                                )}
                                             </TableBody>
                                         </Table>
                                     </TableContainer>
@@ -239,20 +212,16 @@ const NewReceiptForm = () => {
                         <div className="receipt-form__summary">
                             <span className="receipt-form__summary__total-amount">SUMA: {totalAmount} zł</span>
                             <div className="receipt-form__summary__submit-button">
-                                <Button
-                                    disabled={Object.values(values).filter(el => el.toString().length === 0).length > 0}
-                                    variant="outlined" type="submit" onClick={() => {
-                                    console.log(Object.values(values).filter(el => el.toString().length === 0).length > 0)
-                                }}>
+                                <Button type="submit" variant="outlined">
                                     Dodaj paragon
                                 </Button>
                             </div>
                         </div>
-                    </Form>
+                    </form>
                 )}
             </Formik>
         </div>
     );
 };
 
-export default NewReceiptForm;
+export default ReceiptForm;
