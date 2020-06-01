@@ -59,7 +59,7 @@ const NewReceiptForm = () => {
     }
 
     const countTotalAmount = (values) => {
-        let countedAmount = values.items.reduce((total, item) => total + item.itemPrice.replace(',', '.') * 1, 0)
+        let countedAmount = values.reduce((total, item) => total + item.itemPrice.replace(',', '.') * 1, 0)
         setTotalAmount(countedAmount)
     }
 
@@ -211,21 +211,22 @@ const NewReceiptForm = () => {
                                                                     <IconButton size="small" edge="end"
                                                                                 aria-label="delete">
                                                                         <DeleteIcon
-                                                                            onClick={() => arrayHelpers.remove(index)}/>
+                                                                            onClick={() => {
+                                                                                arrayHelpers.remove(index)
+                                                                                values.items.splice(index,1)
+                                                                                countTotalAmount(values.items)
+                                                                            }
+                                                                      }/>
                                                                     </IconButton>
                                                                 </TableCell>
                                                             </TableRow>
-
-
                                                     )
                                                 })
                                                 : (
                                                 <TableRow>
-                                                    <TableCell rowSpan={2} ></TableCell>
-                                                    <TableCell colSpan={5} >asdasdasda</TableCell>
-
-                                                 {/*   <p className="form-items-list__no-items-message">Brak dodanych
-                                                        przedmiotów</p>*/}
+                                                   <TableCell className="form-items-list__no-items-message" colSpan={5} align="center">
+                                                         Brak dodanych przedmiotów
+                                                   </TableCell>
                                                 </TableRow>
                                                 )
                                             }
@@ -250,7 +251,6 @@ const NewReceiptForm = () => {
                     </Form>
                 )}
             </Formik>
-
         </div>
     );
 };

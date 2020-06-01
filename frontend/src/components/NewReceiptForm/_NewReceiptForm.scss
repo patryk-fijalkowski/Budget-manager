@@ -1,5 +1,4 @@
 .receipt-form {
-  border: 1px solid;
   width: 900px;
   margin: 0 auto;
   &__summary {
@@ -30,7 +29,6 @@
 
 .form-items-list {
   padding-top: 15px;
-  border: 1px solid;
   &__header {
     display: flex;
     justify-content: space-around;
@@ -47,6 +45,7 @@
     }
   }
   &__no-items-message {
-    color: darkred;
+    color: red !important;
+    padding: 25px 0 !important;
   }
 }
