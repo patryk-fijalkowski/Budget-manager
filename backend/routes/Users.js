@@ -8,6 +8,10 @@ const uuidv4 = require("uuid/v4");
 const fs = require("fs");
 process.env.SECRET_KEY = "secret";
 
+const usersAccounts = JSON.parse(
+  fs.readFileSync("./_dbMock/users.json").toString()
+);
+
 const checkIsUserRegister = (users, userEmail) => {
   let isRegister = false;
   let registerUserData = {};
@@ -19,9 +23,10 @@ const checkIsUserRegister = (users, userEmail) => {
   });
   return { isRegister, registerUserData };
 };
-const usersAccounts = JSON.parse(
-  fs.readFileSync("./_dbMock/users.json").toString()
-);
+
+const findUserById = (users, id) => {
+  return users.filter((user) => user.id === id);
+};
 
 users.post("/register", (req, res) => {
   const today = new Date();
@@ -74,6 +79,22 @@ users.post("/login", (req, res) => {
         message: "User does not exist",
       });
     }
+  }
+});
+
+users.get("/profile", (req, res) => {
+  let decoded = jwt.verify(
+    req.headers["authorization"],
+    process.env.SECRET_KEY
+  );
+  const decodedUserData = findUserById(usersAccounts, decoded.id);
+  console.log(decodedUserData);
+  if (decodedUserData.length !== 0) {
+    res.send(decodedUserData[0]);
+  } else {
+    res.send({
+      message: "User does not exist",
+    });
   }
 });
 
