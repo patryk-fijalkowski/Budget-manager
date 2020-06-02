@@ -10,17 +10,20 @@ process.env.SECRET_KEY = "secret";
 
 const checkIsUserRegister = (users, userEmail) => {
   let isRegister = false;
-  for (const user in users) {
-    if (users.hasOwnProperty(user)) {
-      if (users[user].email === userEmail) isRegister = true;
+  let registerUserData = {};
+  users.map((user) => {
+    if (user.email === userEmail) {
+      isRegister = true;
+      registerUserData = user;
     }
-  }
-  return isRegister;
+  });
+  return { isRegister, registerUserData };
 };
+const usersAccounts = JSON.parse(
+  fs.readFileSync("./_dbMock/users.json").toString()
+);
 
 users.post("/register", (req, res) => {
-  const users = JSON.parse(fs.readFileSync("./_dbMock/users.json").toString());
-
   const today = new Date();
   const userData = {
     first_name: req.body.first_name,
@@ -30,26 +33,48 @@ users.post("/register", (req, res) => {
     created: today,
   };
 
-  const isRegister = checkIsUserRegister(users, userData.email);
+  const { isRegister } = checkIsUserRegister(usersAccounts, req.body.email);
 
   if (!isRegister) {
     bcrypt.hash(req.body.password, 10, (err, hash) => {
       userData.password = hash;
-      users[uuidv4()] = userData;
-      fs.writeFileSync("./_dbMock/users.json", JSON.stringify(users));
+      userData.id = uuidv4();
+      usersAccounts.push(userData);
+      fs.writeFileSync("./_dbMock/users.json", JSON.stringify(usersAccounts));
       res.send({
-        status: "success",
         message: `User ${userData.first_name} registered!`,
       });
     });
   } else {
     res.send({
-      status: "error",
       message: "User already exists!",
     });
   }
+});
 
-  console.log("wbito na register");
+users.post("/login", (req, res) => {
+  const { isRegister, registerUserData: user } = checkIsUserRegister(
+    usersAccounts,
+    req.body.email
+  );
+  if (isRegister) {
+    if (bcrypt.compareSync(req.body.password, user.password)) {
+      const payload = {
+        id: user.id,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        email: user.email,
+      };
+      let token = jwt.sign(payload, process.env.SECRET_KEY, {
+        expiresIn: 1440,
+      });
+      res.send(token);
+    } else {
+      res.send({
+        message: "User does not exist",
+      });
+    }
+  }
 });
 
 module.exports = users;
