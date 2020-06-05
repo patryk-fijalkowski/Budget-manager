@@ -40,9 +40,10 @@ const RegisterForm = () => {
     });
 
     return (
-        <form onSubmit={formik.handleSubmit}>
+        <form className="register-form" onSubmit={formik.handleSubmit}>
             <TextField
                 id="first_name"
+                className="register-form__input"
                 name="first_name"
                 placeholder="Imię"
                 type="first_name"
@@ -51,6 +52,7 @@ const RegisterForm = () => {
             />
             <TextField
                 id="last_name"
+                className="register-form__input"
                 name="last_name"
                 placeholder="Nazwisko"
                 type="last_name"
@@ -59,6 +61,7 @@ const RegisterForm = () => {
             />
             <TextField
                 id="email"
+                className="register-form__input"
                 name="email"
                 placeholder="E-mail"
                 type="email"
@@ -67,6 +70,7 @@ const RegisterForm = () => {
             />
             <TextField
                 id="password"
+                className="register-form__input"
                 name="password"
                 placeholder="Hasło"
                 type="password"
