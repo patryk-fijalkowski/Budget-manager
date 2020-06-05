@@ -1,15 +1,16 @@
-import React, {useState} from 'react';
-import {Switch, Route, BrowserRouter} from 'react-router-dom'
-import {configureStore} from "./store/ConfigureStore"
-import {Provider} from "react-redux";
+import React, { useState } from "react";
+import { Switch, Route, BrowserRouter } from "react-router-dom";
+import { configureStore } from "./store/ConfigureStore";
+import { Provider } from "react-redux";
 import HomePage from "./pages/HomePage/HomePage";
 import AllReceipts from "./pages/AllReceipts/AllReceipts";
 import CreateReceipt from "./pages/CreateReceipt/CreateReceipt";
 import Header from "./components/Header/Header";
 import SideNav from "./components/SideNav/SideNav";
 import Footer from "./components/Footer/Footer";
-import './App.scss';
-const {store} = configureStore();
+import "./App.scss";
+import RegisterForm from "./components/RegisterForm/RegisterForm";
+const { store } = configureStore();
 
 // const handleClick = () => {
 //     store.dispatch({ type: AccountActions.SET_SESSION_ACTION })
@@ -47,7 +48,7 @@ function App() {
     //
     // const [{ data, isLoading, isError }, setSearch] = useAxios();
     // const [query, setQuery] = useState('redux');
-    const [sideNavOpen, setSideNavOpen] = useState(false)
+    const [sideNavOpen, setSideNavOpen] = useState(false);
     return (
         <Provider store={store}>
             <BrowserRouter>
@@ -55,11 +56,12 @@ function App() {
                 <SideNav sideNavOpen={sideNavOpen} setSideNavOpen={setSideNavOpen} />
                 <main className="main">
                     <Switch>
-                        <Route exact path='/' component={HomePage} />
-                        <Route path='/createReceipt' component={CreateReceipt} />
-                        <Route path='/allReceipts' component={AllReceipts} />
+                        <Route exact path="/" component={HomePage} />
+                        <Route path="/createReceipt" component={CreateReceipt} />
+                        <Route path="/allReceipts" component={AllReceipts} />
+                        <Route path="/registration" component={RegisterForm} />
                     </Switch>
-                </main >
+                </main>
                 <Footer />
             </BrowserRouter>
         </Provider>

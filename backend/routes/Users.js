@@ -29,6 +29,7 @@ const findUserById = (users, id) => {
 };
 
 users.post("/register", (req, res) => {
+  console.log(req.body);
   const today = new Date();
   const userData = {
     first_name: req.body.first_name,
