@@ -9,7 +9,7 @@ import Header from "./components/Header/Header";
 import SideNav from "./components/SideNav/SideNav";
 import Footer from "./components/Footer/Footer";
 import "./App.scss";
-import RegisterForm from "./components/RegisterForm/RegisterForm";
+import RegistrationPage from "./pages/RegistrationPage/RegistrationPage";
 const { store } = configureStore();
 
 // const handleClick = () => {
@@ -59,7 +59,7 @@ function App() {
                         <Route exact path="/" component={HomePage} />
                         <Route path="/createReceipt" component={CreateReceipt} />
                         <Route path="/allReceipts" component={AllReceipts} />
-                        <Route path="/registration" component={RegisterForm} />
+                        <Route path="/registration" component={RegistrationPage} />
                     </Switch>
                 </main>
                 <Footer />
