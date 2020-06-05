@@ -29,7 +29,6 @@ const findUserById = (users, id) => {
 };
 
 users.post("/register", (req, res) => {
-  console.log(req.body);
   const today = new Date();
   const userData = {
     first_name: req.body.first_name,
@@ -59,6 +58,7 @@ users.post("/register", (req, res) => {
 });
 
 users.post("/login", (req, res) => {
+  console.log(req.body);
   const { isRegister, registerUserData: user } = checkIsUserRegister(
     usersAccounts,
     req.body.email
