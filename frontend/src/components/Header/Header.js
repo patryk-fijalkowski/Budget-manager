@@ -15,7 +15,7 @@ const Header = ({setSideNavOpen, sideNavOpen}) => {
             <div className="logo">
                 <img className="hamburger-icon__img" alt="hamburger-icon" src={hamburgerIcon} onClick={toggleSideNav}/>
                 <img className="logo__img" alt="logo" src={logo}/>
-                <p>BM test</p>
+                <p>BM test 2</p>
             </div>
             <img className="avatar__img" alt="avatar" src={avatar}/>
         </Container>
