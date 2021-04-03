@@ -12,15 +12,15 @@ backend/.vs
 ################-FRONTEND DIRECTORY-##################################
 
 # dependencies
-./frontend/node_modules
-./frontend/.pnp
-/.frontend/.pnp.js
+frontend/node_modules
+frontend/.pnp
+frontend/.pnp.js
 
 # production
-./frontend/build
+frontend/build
 
-./frontend/npm-debug.log*
-./frontend/yarn-debug.log*
-./frontend/yarn-error.log*
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
 
 ################-FRONTEND DIRECTORY-##################################
