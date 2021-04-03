@@ -10,7 +10,6 @@ ENV PATH /app/node_modules/.bin:$PATH
 # install app dependencies
 COPY ./package.json ./
 COPY ./yarn.lock ./
-RUN npm install --silent
 RUN npm install -g yarn && yarn install
 #
 RUN yarn build
